@@ -1,103 +1,65 @@
-$(document).ready(function () {
-    const $signInBtn = $("#sign-in-btn");
-    const $signUpBtn = $("#sign-up-btn");
-    const $container = $(".container");
-  
-    $signUpBtn.on("click", function () {
-      $container.addClass("sign-up-mode");
+document.addEventListener("DOMContentLoaded", function () {
+    const signInBtn = document.getElementById("sign-in-btn");
+    const signUpBtn = document.getElementById("sign-up-btn");
+    const container = document.querySelector(".container");
+
+    signUpBtn.addEventListener("click", function () {
+        container.classList.add("sign-up-mode");
     });
-  
-    $signInBtn.on("click", function () {
-      $container.removeClass("sign-up-mode");
+
+    signInBtn.addEventListener("click", function () {
+        container.classList.remove("sign-up-mode");
     });
-  });
- 
- 
-  $(document).ready(function () {
-    
-    $('#login-form').on('submit', function (event) {
+
+    function validateForm(event, formId) {
         let isValid = true;
- 
-     
-        const username = $('#login-username').val().trim();
-        if (username === '') {
-            $('#login-username').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#login-username').removeClass('is-invalid');
-        }
- 
-       
-        const password = $('#login-password').val().trim();
-        if (password === '') {
-            $('#login-password').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#login-password').removeClass('is-invalid');
-        }
- 
-       
+        const form = document.getElementById(formId);
+        const inputs = form.querySelectorAll(".form-control");
+
+        inputs.forEach((input) => {
+            const value = input.value.trim();
+            if (input.id.includes("username") && value.length < 4) {
+                input.classList.add("is-invalid");
+                isValid = false;
+            } else if (input.id.includes("email")) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    input.classList.add("is-invalid");
+                    isValid = false;
+                }
+            } else if (input.id.includes("password")) {
+                if (value.length < 5) {
+                    input.classList.add("is-invalid");
+                    isValid = false;
+                }
+                if (input.id.includes("confirm")) {
+                    const password = document.getElementById("signup-password").value;
+                    if (value !== password) {
+                        input.classList.add("is-invalid");
+                        isValid = false;
+                    }
+                }
+            } else {
+                input.classList.remove("is-invalid");
+            }
+        });
+
         if (!isValid) {
             event.preventDefault();
         }
+    }
+
+    document.getElementById("login-form").addEventListener("submit", function (event) {
+        validateForm(event, "login-form");
     });
- 
-    
-    $('.form-control').on('focus', function () {
-        $(this).removeClass('is-invalid');
+
+    document.getElementById("signup-form").addEventListener("submit", function (event) {
+        validateForm(event, "signup-form");
     });
- });
- 
- 
-  $(document).ready(function () {
-    $('#signup-form').on('submit', function (event) {
-        let isValid = true;
- 
-       
-        const username = $('#signup-username').val();
-        if (username.length < 4) {
-            $('#signup-username').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#signup-username').removeClass('is-invalid');
-        }
- 
-      
-        const email = $('#signup-email').val();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            $('#signup-email').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#signup-email').removeClass('is-invalid');
-        }
- 
-        
-        const password = $('#signup-password').val();
-        if (password.length < 5) {
-            $('#signup-password').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#signup-password').removeClass('is-invalid');
-        }
- 
-       
-        const confirmPassword = $('#signup-confirm-password').val();
-        if (password !== confirmPassword) {
-            $('#signup-confirm-password').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#signup-confirm-password').removeClass('is-invalid');
-        }
- 
-      
-        if (!isValid) {
-            event.preventDefault();
-        }
+
+    document.querySelectorAll(".form-control").forEach((input) => {
+        input.addEventListener("focus", function () {
+            input.classList.remove("is-invalid");
+        });
     });
- 
-    $('.form-control').on('focus', function () {
-        $(this).removeClass('is-invalid');
-    });
- });
-  
+});
